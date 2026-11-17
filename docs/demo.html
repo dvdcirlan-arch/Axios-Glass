@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Axios Glass — Anteprima</title>
+  <meta name="description" content="Anteprima standalone della nuova interfaccia del registro elettronico Axios.">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Only used by the standalone preview, not by the extension. */
+    body.ag-demo { padding-bottom: 40px; }
+    .ag-demo-banner {
+      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%); z-index: 1500;
+      display: flex; align-items: center; gap: 10px; padding: 8px 14px; border-radius: 14px;
+      background: rgba(255,255,255,.78); border: 1px solid #fff; backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(74,64,122,.12); font: 600 11px var(--ag-font); color: var(--ag-muted);
+    }
+    .ag-demo-banner b { color: var(--ag-lavender-deep); }
+  </style>
+</head>
+<body>
+  <div id="axglass-app"></div>
+  <div class="ag-demo-banner">Anteprima demo · dati di esempio · <b>Axios Glass v2</b></div>
+
+  <script src="core.js"></script>
+  <script src="ui.js"></script>
+  <script src="demo.js"></script>
+</body>
+</html>

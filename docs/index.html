@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Axios Glass — Il registro elettronico, finalmente piacevole</title>
+  <meta name="description" content="Axios Glass v2 — una nuova interfaccia pastel glass per il registro elettronico Axios. Dati reali, demo live, estensione Chrome Manifest V3. / A soft glass UI for the Axios school registry.">
+  <link rel="icon" href="assets/logo2.png">
+  <link rel="stylesheet" href="site.css">
+  <script src="site.js" defer></script>
+</head>
+<body class="site">
+
+  <!-- Reusable icons ------------------------------------------------------- -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-github" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.8c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
+    </symbol>
+    <symbol id="i-play" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="m8 5 11 7-11 7z"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.6 2.9 8.3 7 10 4.1-1.7 7-5.4 7-10V6z"/><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="m9 12 2 2 4-4"/>
+    </symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4 20V10m6 10V4m6 16v-7m4 7H2"/>
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="m4 7 8 6 8-6"/>
+    </symbol>
+    <symbol id="i-doc" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M7 3h7l5 5v13H7z"/><path fill="none" stroke="currentColor" stroke-width="1.8" d="M14 3v5h5M10 12h6m-6 4h6"/>
+    </symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M4 7h10m4 0h2M4 17h4m4 0h8"/><circle cx="16" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/>
+    </symbol>
+    <symbol id="i-spark" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="m12 3 1.6 4.4L18 9l-4.4 1.6L12 15l-1.6-4.4L6 9l4.4-1.6zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>
+    </symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" d="m2 9 10-5 10 5-10 5zM5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/>
+    </symbol>
+  </svg>
+
+  <div class="site-orbs"><span class="o1"></span><span class="o2"></span><span class="o3"></span></div>
+
+  <!-- Header --------------------------------------------------------------- -->
+  <header class="site-header">
+    <div class="site-container site-nav">
+      <a class="site-brand" href="#top" aria-label="Axios Glass">
+        <img src="assets/logo2.png" alt="">
+        <span>Axios Glass<small data-it="Registro elettronico" data-en="School registry">Registro elettronico</small></span>
+      </a>
+
+      <nav class="site-links" aria-label="Navigation">
+        <a href="#features" data-it="Funzionalità" data-en="Features">Funzionalità</a>
+        <a href="#demo" data-it="Demo live" data-en="Live demo">Demo live</a>
+        <a href="#install" data-it="Installazione" data-en="Install">Installazione</a>
+      </nav>
+
+      <div class="site-actions">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" data-lang="it" aria-pressed="true">IT</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <a class="site-gh" href="https://github.com/dvdcirlan-arch/Axios-Glass" target="_blank" rel="noopener">
+          <svg class="site-icon"><use href="#i-github"></use></svg>
+          <span data-it="GitHub" data-en="GitHub">GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- Hero --------------------------------------------------------------- -->
+    <section class="hero">
+      <div class="site-container hero-grid">
+        <div class="hero-copy">
+          <span class="hero-eyebrow"><img src="assets/logo1.png" alt=""> <span data-it="Estensione Chrome · Manifest V3" data-en="Chrome extension · Manifest V3">Estensione Chrome · Manifest V3</span></span>
+          <h1>
+            <span data-it="Il registro elettronico," data-en="The school registry,">Il registro elettronico,</span>
+            <em data-it="finalmente piacevole." data-en="finally pleasant.">finalmente piacevole.</em>
+          </h1>
+          <p class="hero-lead" data-it="Axios Glass v2 ridisegna il registro Axios con un'interfaccia soft pastel glass. Legge solo i dati reali già presenti nella pagina: niente invenzioni, niente API esterne, niente tracciamento." data-en="Axios Glass v2 redesigns the Axios registry with a soft pastel-glass interface. It reads only the real data already on the page: no invented values, no external APIs, no tracking.">Axios Glass v2 ridisegna il registro Axios con un'interfaccia soft pastel glass. Legge solo i dati reali già presenti nella pagina: niente invenzioni, niente API esterne, niente tracciamento.</p>
+          <div class="hero-actions">
+            <a class="btn btn--primary" href="demo.html">
+              <svg><use href="#i-play"></use></svg><span data-it="Prova la demo" data-en="Try the demo">Prova la demo</span>
+            </a>
+            <a class="btn btn--ghost" href="#install">
+              <svg><use href="#i-arrow"></use></svg><span data-it="Come installarla" data-en="How to install">Come installarla</span>
+            </a>
+          </div>
+          <div class="hero-badges">
+            <span class="badge"><b>MV3</b> · Chrome</span>
+            <span class="badge" data-it="<b>Dati</b> reali" data-en="Real <b>data</b>">Dati reali</span>
+            <span class="badge" data-it="Nessun <b>tracciamento</b>" data-en="No <b>tracking</b>">Nessun tracciamento</span>
+            <span class="badge">Open source</span>
+          </div>
+        </div>
+
+        <div class="hero-visual" id="demo">
+          <div class="browser">
+            <div class="browser-bar">
+              <span class="browser-dots"><i></i><i></i><i></i></span>
+              <span class="browser-url">dvdcirlan-arch.github.io/Axios-Glass/demo.html</span>
+              <a class="browser-open" href="demo.html" target="_blank" rel="noopener" data-it="Apri ↗" data-en="Open ↗">Apri ↗</a>
+            </div>
+            <iframe src="demo.html" title="Anteprima live di Axios Glass" loading="lazy"></iframe>
+          </div>
+          <div class="visual-tag"><b data-it="Anteprima live" data-en="Live preview">Anteprima live</b> · <span data-it="dati di esempio" data-en="sample data">dati di esempio</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features ----------------------------------------------------------- -->
+    <section class="section" id="features">
+      <div class="site-container">
+        <div class="section-head">
+          <p class="section-kicker" data-it="Perché piace" data-en="Why you'll like it">Perché piace</p>
+          <h2 data-it="Tutto quello che il registro avrebbe dovuto essere." data-en="Everything the registry should have been.">Tutto quello che il registro avrebbe dovuto essere.</h2>
+          <p data-it="Otto sezioni, una sola estetica. La grafica cambia, i dati restano quelli del registro." data-en="Eight sections, one consistent look. The graphics change, the data stays yours.">Otto sezioni, una sola estetica. La grafica cambia, i dati restano quelli del registro.</p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-shield"></use></svg></div>
+            <h3 data-it="Dati reali, sempre" data-en="Real data, always">Dati reali, sempre</h3>
+            <p data-it="Lettura diretta del DOM Axios: voti, registro, presenze e comunicazioni. Il markup ASP.NET resta intatto e i postback funzionano." data-en="Direct reading of the Axios DOM: grades, register, attendance and messages. The ASP.NET markup stays intact and postbacks keep working.">Lettura diretta del DOM Axios: voti, registro, presenze e comunicazioni. Il markup ASP.NET resta intatto e i postback funzionano.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-spark"></use></svg></div>
+            <h3 data-it="Pastel glass" data-en="Pastel glass">Pastel glass</h3>
+            <p data-it="Palette ricavata dal logo della scuola: teal profondo e acqua. Vetro morbido, ombre leggere, zero scratchiness." data-en="Palette taken from the school logo: deep teal and aqua. Soft glass, gentle shadows, no visual noise.">Palette ricavata dal logo della scuola: teal profondo e acqua. Vetro morbido, ombre leggere, zero scratchiness.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-chart"></use></svg></div>
+            <h3 data-it="Voti che parlano" data-en="Grades that speak">Voti che parlano</h3>
+            <p data-it="Media, trend, distribuzione e sparkline SVG. Ricerca, filtri, ordinamento e dettaglio per materia." data-en="Average, trend, distribution and SVG sparkline. Search, filters, sorting and per-subject detail.">Media, trend, distribuzione e sparkline SVG. Ricerca, filtri, ordinamento e dettaglio per materia.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-doc"></use></svg></div>
+            <h3 data-it="Pagella separata" data-en="Separate report card">Pagella separata</h3>
+            <p data-it="La pagella mostra solo il documento reale. Se non è pubblicata resta vuota: non prestita mai le medie della sezione Voti." data-en="The report card shows only the real document. If unpublished it stays empty: it never borrows averages from Grades.">La pagella mostra solo il documento reale. Se non è pubblicata resta vuota: non prestita mai le medie della sezione Voti.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-mail"></use></svg></div>
+            <h3 data-it="Comunicazioni leggibili" data-en="Readable messages">Comunicazioni leggibili</h3>
+            <p data-it="Clicchi un messaggio e leggi testo completo, mittente e data. Precedente e Successiva navigano tutta la posta." data-en="Click a message to read its full text, sender and date. Previous and Next walk through the whole inbox.">Clicchi un messaggio e leggi testo completo, mittente e data. Precedente e Successiva navigano tutta la posta.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-ico"><svg><use href="#i-sliders"></use></svg></div>
+            <h3 data-it="Simulatore what-if" data-en="What-if simulator">Simulatore what-if</h3>
+            <p data-it="Cambi un voto ipotetico e vedi subito la nuova media. Calcolatore del voto necessario per l'obiettivo, senza toccare il registro." data-en="Change a hypothetical grade and instantly see the new average. Target-grade calculator included, without touching the registry.">Cambi un voto ipotetico e vedi subito la nuova media. Calcolatore del voto necessario per l'obiettivo, senza toccare il registro.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Install ------------------------------------------------------------ -->
+    <section class="section" id="install">
+      <div class="site-container install-wrap">
+        <div>
+          <div class="section-head">
+            <p class="section-kicker" data-it="Inizia ora" data-en="Get started">Inizia ora</p>
+            <h2 data-it="Tre passi, nessuna configurazione." data-en="Three steps, no configuration.">Tre passi, nessuna configurazione.</h2>
+            <p data-it="Funziona solo su registrofamiglie.axioscloud.it. La pagina di login è ignorata di proposito." data-en="It works only on registrofamiglie.axioscloud.it. The login page is intentionally ignored.">Funziona solo su registrofamiglie.axioscloud.it. La pagina di login è ignorata di proposito.</p>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <span class="step-num">1</span>
+              <div>
+                <h3 data-it="Prendi i file" data-en="Get the files">Prendi i file</h3>
+                <p data-it="Clona il repository oppure scarica lo ZIP e scompattalo." data-en="Clone the repository or download the ZIP and unzip it.">Clona il repository oppure scarica lo ZIP e scompattalo.</p>
+                <div class="terminal"><code>git clone https://github.com/dvdcirlan-arch/Axios-Glass.git</code><button type="button" class="copy-btn" data-copy="git clone https://github.com/dvdcirlan-arch/Axios-Glass.git" data-it-toast="Comando copiato" data-en-toast="Command copied" data-toast="Comando copiato" data-it="Copia" data-en="Copy">Copia</button></div>
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-num">2</span>
+              <div>
+                <h3 data-it="Carica l'estensione" data-en="Load the extension">Carica l'estensione</h3>
+                <p data-it="Apri chrome://extensions, attiva la modalità sviluppatore, scegli Carica estensione non pacchettizzata e seleziona la cartella v2." data-en="Open chrome://extensions, enable Developer mode, choose Load unpacked and select the v2 folder.">Apri chrome://extensions, attiva la modalità sviluppatore, scegli Carica estensione non pacchettizzata e seleziona la cartella v2.</p>
+              </div>
+            </div>
+            <div class="step">
+              <span class="step-num">3</span>
+              <div>
+                <h3 data-it="Accedi al registro" data-en="Sign in to the registry">Accedi al registro</h3>
+                <p data-it="Disabilita la vecchia estensione per evitare doppia iniezione, poi fai login: Axios Glass si attiva da solo. Modalità classica la disattiva temporaneamente." data-en="Disable the old extension to avoid double injection, then sign in: Axios Glass turns on automatically. Classic mode switches it off temporarily.">Disabilita la vecchia estensione per evitare doppia iniezione, poi fai login: Axios Glass si attiva da solo. Modalità classica la disattiva temporaneamente.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="note">
+          <h3 data-it="Scorciatoie e dettagli" data-en="Shortcuts and details">Scorciatoie e dettagli</h3>
+          <p><strong>Ctrl / Cmd + K</strong> <span data-it="porta il focus nella ricerca." data-en="moves focus to search.">porta il focus nella ricerca.</span></p>
+          <p><strong>Esc</strong> <span data-it="chiude la finestra di un messaggio." data-en="closes the message window.">chiude la finestra di un messaggio.</span></p>
+          <p data-it="Le preferenze e le simulazioni restano nel localStorage del browser. La cache di sessione evita che la dashboard mostri zeri prima che una sezione sia stata visitata." data-en="Preferences and simulations stay in the browser localStorage. A session cache stops the dashboard showing zeros before a section has been visited.">Le preferenze e le simulazioni restano nel localStorage del browser. La cache di sessione evita che la dashboard mostri zeri prima che una sezione sia stata visitata.</p>
+          <p><strong data-it="Nessun dato personale lascia il browser." data-en="No personal data leaves the browser.">Nessun dato personale lascia il browser.</strong></p>
+        </aside>
+      </div>
+    </section>
+
+    <!-- Privacy ------------------------------------------------------------ -->
+    <section class="section" style="padding-top:0">
+      <div class="site-container">
+        <div class="privacy">
+          <div class="feature-ico"><svg><use href="#i-layers"></use></svg></div>
+          <div>
+            <h3 data-it="Privacy by design" data-en="Privacy by design">Privacy by design</h3>
+            <p data-it="Nessun server esterno, nessun analytics, nessun dato inventato. La demo in questa pagina usa esclusivamente dati di esempio; l'estensione legge soltanto ciò che Axios ha già renderizzato." data-en="No external server, no analytics, no invented data. The demo on this page uses sample data only; the extension reads just what Axios has already rendered.">Nessun server esterno, nessun analytics, nessun dato inventato. La demo in questa pagina usa esclusivamente dati di esempio; l'estensione legge soltanto ciò che Axios ha già renderizzato.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer --------------------------------------------------------------- -->
+  <footer class="site-footer">
+    <div class="site-container footer-inner">
+      <span>© Axios Glass v2</span>
+      <a href="https://github.com/dvdcirlan-arch/Axios-Glass" target="_blank" rel="noopener" data-it="Repository" data-en="Repository">Repository</a>
+      <a href="https://github.com/dvdcirlan-arch/Axios-Glass/issues" target="_blank" rel="noopener" data-it="Segnala un problema" data-en="Report an issue">Segnala un problema</a>
+      <a href="demo.html" data-it="Demo" data-en="Demo">Demo</a>
+      <span class="footer-spacer"></span>
+      <a href="#top" data-it="Torna su ↑" data-en="Back to top ↑">Torna su ↑</a>
+    </div>
+  </footer>
+
+</body>
+</html>
