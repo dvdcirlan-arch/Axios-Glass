@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Axios Glass</string>
+    <string name="url_axios">https://registrofamiglie.axioscloud.it/</string>
+
+    <string name="menu_reload">Ricarica pagina</string>
+    <string name="menu_refresh">Aggiorna dati</string>
+    <string name="menu_glass">Mostra Axios Glass</string>
+    <string name="menu_classic">Modalità classica</string>
+    <string name="menu_open">Apri nel browser</string>
+    <string name="menu_about">Informazioni</string>
+
+    <string name="loading">Caricamento del registro…</string>
+    <string name="ready">Axios Glass attivo</string>
+    <string name="subtitle_connecting">Connessione al registro…</string>
+    <string name="subtitle_loading_glass">Applicazione di Axios Glass…</string>
+    <string name="subtitle_ready">Axios Glass attivo</string>
+    <string name="subtitle_classic">Modalità classica</string>
+    <string name="subtitle_injection_error">Errore durante l\'avvio di Axios Glass</string>
+    <string name="login_hint">Accedi con le tue credenziali Axios. I dati restano in questo dispositivo.</string>
+    <string name="about_title">Informazioni</string>
+    <string name="about_message">Axios Glass per Android apre il registro Axios in una WebView e applica la stessa interfaccia dell\'estensione Chrome.\n\nLegge solo i dati già presenti nella pagina: nessun valore inventato, nessun server esterno, nessun tracciamento. Le credenziali e i cookie restano nel profilo WebView di questa app.\n\nPer segnalare un bug: github.com/dvdcirlan-arch/Axios-Glass/issues</string>
+    <string name="error_open">Nessuna app disponibile per aprire questo link.</string>
+</resources>
