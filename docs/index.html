@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Axios Glass — Il registro elettronico, finalmente piacevole</title>
   <meta name="description" content="Axios Glass v2 — una nuova interfaccia pastel glass per il registro elettronico Axios. Dati reali, demo live, estensione Chrome Manifest V3. / A soft glass UI for the Axios school registry.">
-  <link rel="icon" href="assets/logo2.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23006667'/%3E%3Cpath d='M10 12.5h12M10 17h9M10 21.5h5' stroke='%2348BCBD' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="site.css">
   <script src="site.js" defer></script>
 </head>
@@ -13,6 +13,11 @@
 
   <!-- Reusable icons ------------------------------------------------------- -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-mark" viewBox="0 0 32 32">
+      <rect x="2" y="2" width="28" height="28" rx="9" fill="#006667"/>
+      <path d="M10 12.5h12M10 17h9M10 21.5h5" stroke="#48BCBD" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="m21.5 5.8.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z" fill="#fff"/>
+    </symbol>
     <symbol id="i-github" viewBox="0 0 24 24">
       <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.8c.85 0 1.7.11 2.5.34 1.9-1.29 2.74-1.02 2.74-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/>
     </symbol>
@@ -51,7 +56,7 @@
   <header class="site-header">
     <div class="site-container site-nav">
       <a class="site-brand" href="#top" aria-label="Axios Glass">
-        <img src="assets/logo2.png" alt="">
+        <svg class="site-mark"><use href="#i-mark"></use></svg>
         <span>Axios Glass<small data-it="Registro elettronico" data-en="School registry">Registro elettronico</small></span>
       </a>
 
@@ -79,7 +84,7 @@
     <section class="hero">
       <div class="site-container hero-grid">
         <div class="hero-copy">
-          <span class="hero-eyebrow"><img src="assets/logo1.png" alt=""> <span data-it="Estensione Chrome · Manifest V3" data-en="Chrome extension · Manifest V3">Estensione Chrome · Manifest V3</span></span>
+          <span class="hero-eyebrow"><svg class="hero-mark"><use href="#i-mark"></use></svg> <span data-it="Estensione Chrome · Manifest V3" data-en="Chrome extension · Manifest V3">Estensione Chrome · Manifest V3</span></span>
           <h1>
             <span data-it="Il registro elettronico," data-en="The school registry,">Il registro elettronico,</span>
             <em data-it="finalmente piacevole." data-en="finally pleasant.">finalmente piacevole.</em>
@@ -133,7 +138,7 @@
           <article class="feature">
             <div class="feature-ico"><svg><use href="#i-spark"></use></svg></div>
             <h3 data-it="Pastel glass" data-en="Pastel glass">Pastel glass</h3>
-            <p data-it="Palette ricavata dal logo della scuola: teal profondo e acqua. Vetro morbido, ombre leggere, zero scratchiness." data-en="Palette taken from the school logo: deep teal and aqua. Soft glass, gentle shadows, no visual noise.">Palette ricavata dal logo della scuola: teal profondo e acqua. Vetro morbido, ombre leggere, zero scratchiness.</p>
+            <p data-it="Palette teal e acqua, vetro morbido, ombre leggere, zero scratchiness. Nessun marchio di una scuola specifica: l'estensione si adatta a qualsiasi istituto." data-en="Teal and aqua palette, soft glass, gentle shadows, no visual noise. No specific school branding: the extension works for any institute.">Palette teal e acqua, vetro morbido, ombre leggere, zero scratchiness. Nessun marchio di una scuola specifica: l'estensione si adatta a qualsiasi istituto.</p>
           </article>
           <article class="feature">
             <div class="feature-ico"><svg><use href="#i-chart"></use></svg></div>

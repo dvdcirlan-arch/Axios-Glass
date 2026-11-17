@@ -59,12 +59,12 @@
     impostazioni: 'Impostazioni'
   };
 
-  function logoUrl(file) {
-    const path = 'assets/' + (file || 'logo1.png');
-    if (global.chrome && global.chrome.runtime && global.chrome.runtime.getURL) {
-      return global.chrome.runtime.getURL(path);
-    }
-    return path;
+  function brandMark(cls) {
+    return '<svg' + (cls ? ' class="' + cls + '"' : '') + ' viewBox="0 0 32 32" aria-hidden="true">' +
+      '<rect x="2" y="2" width="28" height="28" rx="9" fill="#006667"/>' +
+      '<path d="M10 12.5h12M10 17h9M10 21.5h5" stroke="#48BCBD" stroke-width="2.4" stroke-linecap="round"/>' +
+      '<path d="m21.5 5.8.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7z" fill="#fff"/>' +
+      '</svg>';
   }
 
   function icon(name, cls) {
@@ -137,7 +137,7 @@
       '</div>';
 
     return '<aside class="ag-sidebar">' +
-      '<div class="ag-brand"><div class="ag-brand-mark"><img class="ag-brand-logo" src="' + logoUrl('logo2.png') + '" alt="Logo Istituto"></div>' +
+      '<div class="ag-brand"><div class="ag-brand-mark">' + brandMark('ag-brand-logo') + '</div>' +
       '<div><div class="ag-brand-name">Axios Glass</div><div class="ag-brand-tag">Registro elettronico</div></div></div>' +
       '<div><div class="ag-nav-label">Workspace</div><nav class="ag-nav">' + nav + '</nav></div>' +
       '<div class="ag-sidebar-foot">' + profile +
@@ -172,7 +172,7 @@
     const s = data.summary;
     return '<section class="ag-hero">' +
       '<div style="position:relative;z-index:1">' +
-      '<span class="ag-hero-eyebrow"><img class="ag-hero-logo" src="' + logoUrl() + '" alt=""> ' + esc(data.meta.institute || 'Anno scolastico') + '</span>' +
+      '<span class="ag-hero-eyebrow">' + brandMark('ag-hero-logo') + ' ' + esc(data.meta.institute || 'Anno scolastico') + '</span>' +
       '<h1>Ciao ' + esc((data.meta.student || '').split(' ')[0] || 'studente') + ' 👋</h1>' +
       '<p>Ecco come sta andando il tuo percorso. ' +
       (s.gradeCount ? 'Hai <b>' + esc(s.gradeCount) + '</b> valutazioni registrate e una media complessiva di <b>' + fmtNum(s.average) + '</b>.' : 'I dati appariranno appena il registro caricherà le valutazioni.') +
