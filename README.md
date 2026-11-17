@@ -3,6 +3,7 @@
 [![Live demo](https://img.shields.io/badge/demo-live-48BCBD?style=flat-square&logo=githubpages)](https://dvdcirlan-arch.github.io/Axios-Glass/)
 [![GitHub](https://img.shields.io/badge/GitHub-dvdcirlan--arch%2FAxios--Glass-006667?style=flat-square&logo=github)](https://github.com/dvdcirlan-arch/Axios-Glass)
 [![Chrome MV3](https://img.shields.io/badge/Chrome-Manifest%20V3-006667?style=flat-square&logo=googlechrome&logoColor=white)](https://github.com/dvdcirlan-arch/Axios-Glass)
+[![Android APK](https://img.shields.io/badge/Android-WebView%20APK-48BCBD?style=flat-square&logo=android)](https://github.com/dvdcirlan-arch/Axios-Glass/actions/workflows/build-apk.yml)
 
 **Nuova interfaccia per il registro elettronico Axios — pastel glass, dati reali, zero tracciamento.**
 
@@ -76,6 +77,20 @@ python -m http.server 8766
 ```
 
 poi visita `http://127.0.0.2:8766/demo.html`.
+
+### Android — WebView APK
+
+Chrome Android non supporta le estensioni MV3, quindi su telefono l'app in `android/`
+apre il registro in una WebView con user agent desktop e inietta gli stessi file JS/CSS
+dell'estensione. Legge solo il DOM già renderizzato da Axios: nessun server esterno,
+nessun dato inventato, cookie e sessione restano sul dispositivo.
+
+- Build cloud: **Actions → Build Android APK → Run workflow**, poi scarica l'artifact
+  `ax glass-debug-apk` e installa `app-debug.apk`.
+- Workflow: https://github.com/dvdcirlan-arch/Axios-Glass/actions/workflows/build-apk.yml
+- Istruzioni, privacy e limitazioni: [`android/README.md`](android/README.md).
+- È un APK **debug**, firmato con la chiave predefinita Android: va bene per provarlo,
+  non per pubblicarlo su Play Store.
 
 ---
 
