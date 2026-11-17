@@ -5,7 +5,7 @@
    ========================================================================= */
 
 :root {
-  /* Palette derived from the I.C. Lesmo logo: #006667 deep teal + #48BCBD aqua. */
+  /* Calm teal/aqua glass palette: #006667 deep teal + #48BCBD aqua. */
   --ag-ink: #123f40;
   --ag-ink-soft: #3b6667;
   --ag-muted: #7a9a9b;
@@ -153,7 +153,7 @@ body.ag-demo::before {
   overflow: hidden;
 }
 
-.ag-brand-logo { width: 30px; height: 30px; object-fit: contain; display: block; }
+.ag-brand-logo { width: 30px; height: 30px; display: block; }
 
 .ag-brand-name { font-size: 15px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
 .ag-brand-tag { font-size: 10px; color: var(--ag-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 3px; }
@@ -288,7 +288,7 @@ body.ag-demo::before {
   border-radius: 50%; background: rgba(255, 255, 255, 0.42); filter: blur(10px);
 }
 
-.ag-hero-logo { width: 17px; height: 17px; object-fit: contain; }
+.ag-hero-logo { width: 17px; height: 17px; display: block; flex: none; }
 .ag-hero-eyebrow {
   display: inline-flex; align-items: center; gap: 7px;
   font-size: 11px; font-weight: 750; color: var(--ag-lavender-deep);

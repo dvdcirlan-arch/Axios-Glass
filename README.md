@@ -24,7 +24,7 @@ funzionare, il contenuto originale viene solo nascosto con CSS.
 
 - **Legge solo dati reali** dal DOM già presente nella pagina: nessun valore inventato, nessuna API esterna.
 - **Non distruttiva**: nessun elemento del registro viene cancellato.
-- **Palette dal logo della scuola**: teal profondo `#006667` + aqua `#48BCBD`.
+- **Palette teal e aqua**: `#006667` + `#48BCBD`, senza marchi o colori di una scuola specifica.
 - **Nessun server, nessun analytics**: preferenze e simulazioni restano nel browser.
 
 ## Cosa vedi
@@ -89,7 +89,6 @@ Il repository contiene l'estensione nella radice e la landing page in `docs/`.
 | `styles.css` | Design system pastel glass: token, shell, card, grafici, responsive |
 | `demo.html` / `demo.js` | Dati di esempio e controller standalone |
 | `docs/` | Landing page GitHub Pages + copia della demo per l'iframe |
-| `assets/logo1.png`, `assets/logo2.png` | Logo dell'istituto (wide e quadrato) |
 | `test-fixture.html`, `test-dashboard.html` | DOM Axios minimale e sanificato per i test |
 
 > `docs/demo.html`, `docs/core.js`, `docs/ui.js`, `docs/demo.js`, `docs/styles.css` e `docs/assets/`

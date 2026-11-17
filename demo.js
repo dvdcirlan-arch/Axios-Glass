@@ -17,7 +17,7 @@
   const RAW = {
     meta: {
       student: 'Giulia Rossi',
-      institute: 'Liceo Scientifico “A. Volta”',
+      institute: 'Istituto di esempio',
       year: 'Anno scolastico 2026/27',
       className: '4ª B',
       avatar: ''
