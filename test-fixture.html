@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Fixture scraper — Axios Glass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Minimal, sanitized imitation of the Axios DOM used only to test scraping. -->
+  <div class="page-header">
+    <span class="desc-as-header"><span class="pull-left" title="94030860152 - ISTITUTO DI PROVA">ISTITUTO DI PROVA</span></span>
+    <span class="username"><b>DAVID</b></span>
+  </div>
+  <div class="anno-footer">2026/2027</div>
+
+  <div id="page-content">
+    <fieldset>
+      <legend>Valutazioni</legend>
+      <table id="table-voti">
+        <thead><tr><th>Data</th><th>Materia</th><th>Tipo</th><th>Voto</th><th>Obiettivo</th><th>Commento</th><th>Docente</th></tr></thead>
+        <tbody>
+          <tr><td>12/10/2026</td><td>Matematica</td><td>Scritto</td><td>8</td><td>Funzioni</td><td>Ottimo</td><td>Prof.ssa Bianchi</td></tr>
+          <tr><td>14/10/2026</td><td></td><td>Orale</td><td>7+</td><td>Derivate</td><td></td><td>Prof.ssa Bianchi</td></tr>
+          <tr><td>16/10/2026</td><td>Fisica</td><td>Scritto</td><td>6</td><td>Newton</td><td></td><td>Prof. Verdi</td></tr>
+          <tr><td>20/10/2026</td><td>Storia</td><td>Orale</td><td>8½</td><td>Guerra fredda</td><td></td><td>Prof.ssa Conti</td></tr>
+          <tr><td>22/10/2026</td><td>Latino</td><td>Scritto</td><td>6-</td><td>Cesare</td><td></td><td>Prof. Rinaldi</td></tr>
+          <tr class="voti_no_media"><td>25/10/2026</td><td>Inglese</td><td>Orale</td><td>9</td><td>Speaking</td><td>non fa media</td><td>Prof.ssa Moretti</td></tr>
+          <tr><td>28/10/2026</td><td>Scienze</td><td>Pratico</td><td>Ottimo</td><td>Laboratorio</td><td></td><td>Prof.ssa Ferri</td></tr>
+        </tbody>
+      </table>
+      <div class="rdoc_full_valutazioni">
+        <span class="voto voto_O" title="data: 03/11/2026 materia: Filosofia docente: Prof.ssa Galli note: dialogo su Kant">7,5</span>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Registro di Classe</legend>
+      <span id="fdData">18/11/2026</span>
+      <button class="settimana-naviga" data-others="-7">Prec</button>
+      <button class="settimana-naviga" data-others="+7">Succ</button>
+      <table id="table-rcla">
+        <tbody>
+          <tr>
+            <td>17/11/2026</td>
+            <td><b>Matematica:</b> Derivate<br><b>Fisica:</b> Entropia</td>
+            <td><b>Italiano:</b> Esercizi pag. 120</td>
+            <td><b>Storia:</b> Verifica Rivoluzione francese</td>
+            <td></td><td></td><td></td>
+          </tr>
+        </tbody>
+      </table>
+    </fieldset>
+
+    <div class="tm-header">Timeline</div>
+    <div class="mt-actions">
+      <div class="tm-day">
+        <span class="tm-day-number">17</span><span class="tm-day-name">martedì</span><span class="tm-month">novembre</span>
+        <div class="mt-action"><span class="mt-action-author">compito per casa di Matematica</span><span class="mt-action-desc">Esercizi 1-5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="ui.js"></script>
+  <script src="scraper.js"></script>
+  <script src="content.js"></script>
+</body>
+</html>
