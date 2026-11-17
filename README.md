@@ -14,6 +14,10 @@ La pagina è bilingue: usa l'interruttore **IT / EN** in alto a destra. La demo 
 è [proprio l'estensione](https://dvdcirlan-arch.github.io/Axios-Glass/demo.html) con dati di esempio:
 non serve login, non serve installare nulla.
 
+### Hai trovato un bug?
+
+Commenta sul repository o apri una issue: **https://github.com/dvdcirlan-arch/Axios-Glass/issues**
+
 ---
 
 ## Perché
