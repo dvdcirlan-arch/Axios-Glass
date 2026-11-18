@@ -20,6 +20,7 @@
   const NAV_ACTIONS = {
     voti: 'FAMILY_VOTI',
     registro: 'FAMILY_REGISTRO_CLASSE',
+    compiti: 'FAMILY_REGISTRO_CLASSE_COMPITI',
     dashboard: 'DASHBOARDLOAD',
     assenze: 'FAMILY_ASSENZE',
     comunicazioni: 'FAMILY_COMUNICAZIONI',
@@ -50,6 +51,7 @@
   let observer = null;
   let debounceTimer = null;
   let observedHost = null;
+  let forcedSection = null;
 
   function save(key, value) { Core.storageSet(key, value); }
 
@@ -95,6 +97,26 @@
     return true;
   }
 
+  // The "Compiti e Verifiche" tab only exists after Registro di classe loaded.
+  // Click it when present, otherwise load Registro first and then click the tab.
+  function waitFor(selector, callback, timeout) {
+    const started = Date.now();
+    function attempt() {
+      const el = doc.querySelector(selector);
+      if (el) { callback(el); return; }
+      if (Date.now() - started < (timeout || 5000)) global.setTimeout(attempt, 120);
+    }
+    attempt();
+  }
+
+  function openCompitiTab() {
+    const tab = '[data-action="FAMILY_REGISTRO_CLASSE_COMPITI"]';
+    if (doc.querySelector(tab)) { trigger(tab); return; }
+    if (trigger('[data-action="FAMILY_REGISTRO_CLASSE"]')) {
+      waitFor(tab, function () { trigger(tab); });
+    }
+  }
+
   function triggerMessage(id) {
     const el = Scraper.messageTrigger && Scraper.messageTrigger(id);
     if (!el) return false;
@@ -118,7 +140,9 @@
   }
 
   function collect() {
-    const section = Scraper.detectSection(state.section);
+    // A click on Compiti must win over the DOM that is still on the old page.
+    const section = forcedSection || Scraper.detectSection(state.section);
+    forcedSection = null;
     state.section = section;
     save(KEYS.section, section);
 
@@ -142,7 +166,12 @@
 
     raw.grades = keep('grades', Scraper.scrapeGrades(), cache);
     const register = Scraper.scrapeRegister();
-    raw.register = mergeById(register.items, cache.register);
+    // Drop cached rows from the same live source: the weekly table and the
+    // "Compiti e Verifiche" table must never be mixed into one stale list.
+    const cachedRegister = (cache.register || []).filter(function (item) {
+      return !register.source || item.source !== register.source;
+    });
+    raw.register = mergeById(register.items, cachedRegister);
     cache.register = raw.register;
     if (register.week) {
       raw.week = register.week;
@@ -216,13 +245,22 @@
   const handlers = {
     nav: function (payload) {
       if (!payload.section) return;
+      forcedSection = payload.section;
       state.section = payload.section;
       state.subjectFilter = '';
       state.openMessageId = null;
+      if (payload.section === 'compiti') {
+        state.registerFilter = 'compito';
+        save(KEYS.registerFilter, state.registerFilter);
+      }
       save(KEYS.section, state.section);
       render();
-      const action = NAV_ACTIONS[payload.section];
-      if (action) trigger('[data-action="' + action + '"]');
+      if (payload.section === 'compiti') {
+        openCompitiTab();
+      } else {
+        const action = NAV_ACTIONS[payload.section];
+        if (action) trigger('[data-action="' + action + '"]');
+      }
       global.scrollTo({ top: 0, behavior: 'smooth' });
     },
     search: function (payload) {
@@ -239,7 +277,13 @@
     'register-filter': function (payload) {
       state.registerFilter = payload.filter;
       save(KEYS.registerFilter, state.registerFilter);
+      if (payload.filter === 'compito') {
+        forcedSection = 'compiti';
+        state.section = 'compiti';
+        save(KEYS.section, state.section);
+      }
       render();
+      if (payload.filter === 'compito') openCompitiTab();
     },
     sort: function (payload) { state.sort = payload.sort; save(KEYS.sort, state.sort); render(); },
     subject: function (payload) {

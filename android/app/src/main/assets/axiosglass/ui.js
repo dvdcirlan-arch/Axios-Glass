@@ -41,6 +41,7 @@
     { id: 'dashboard', label: 'Dashboard', icon: 'home' },
     { id: 'voti', label: 'Voti', icon: 'chart' },
     { id: 'registro', label: 'Registro', icon: 'book' },
+    { id: 'compiti', label: 'Compiti', icon: 'clip' },
     { id: 'assenze', label: 'Presenze', icon: 'calendar' },
     { id: 'comunicazioni', label: 'Comunicazioni', icon: 'mail' },
     { id: 'orario', label: 'Orario', icon: 'clock' },
@@ -52,6 +53,7 @@
     dashboard: 'La tua giornata',
     voti: 'Valutazioni',
     registro: 'Registro di classe',
+    compiti: 'Compiti e verifiche',
     assenze: 'Presenze e assenze',
     comunicazioni: 'Comunicazioni',
     orario: 'Orario settimanale',
@@ -411,13 +413,22 @@
     const list = data.register.filter(function (item) {
       return data.registerFilter === 'all' || item.type === data.registerFilter;
     });
+    const isCompiti = data.section === 'compiti';
     const labels = { all: 'Tutto', verifica: 'Verifiche', compito: 'Compiti', argomento: 'Argomenti' };
+    const noun = data.registerFilter === 'compito' ? 'compiti'
+      : data.registerFilter === 'verifica' ? 'verifiche'
+      : data.registerFilter === 'argomento' ? 'argomenti' : 'elementi';
+    const sub = isCompiti
+      ? esc(list.length) + ' ' + noun + ' letti dalla sezione Compiti e Verifiche del registro'
+      : esc(data.week ? 'Settimana del ' + data.week + ' · ' : '') + esc(list.length) + ' elementi · spunta per segnare come fatto';
     return '<div class="ag-stack"><section class="ag-card">' +
-      '<div class="ag-card-head"><div><h2 class="ag-card-title">Attività della classe</h2>' +
-      '<p class="ag-card-sub">' + esc(data.week ? 'Settimana del ' + data.week + ' · ' : '') + esc(list.length) + ' elementi · spunta per segnare come fatto</p></div>' +
+      '<div class="ag-card-head"><div><h2 class="ag-card-title">' +
+      (isCompiti ? 'Compiti e verifiche' : 'Attività della classe') + '</h2>' +
+      '<p class="ag-card-sub">' + sub + '</p></div>' +
       '<div style="display:flex;gap:8px;align-items:center">' +
-      '<button class="ag-icon-btn" data-action="week-prev" title="Settimana precedente">' + icon('chevron') + '</button>' +
-      '<button class="ag-icon-btn" data-action="week-next" title="Settimana successiva">' + icon('chevron') + '</button>' +
+      (isCompiti ? '' :
+        '<button class="ag-icon-btn" data-action="week-prev" title="Settimana precedente">' + icon('chevron') + '</button>' +
+        '<button class="ag-icon-btn" data-action="week-next" title="Settimana successiva">' + icon('chevron') + '</button>') +
       '</div></div>' +
       '<div class="ag-seg" style="margin-bottom:12px">' + Object.keys(labels).map(function (key) {
         return '<button data-action="register-filter" data-filter="' + key + '"' +
@@ -434,7 +445,10 @@
           '<span>' + esc(item.subject || '') + '</span><span>' + fmtDate(item.date) + '</span>' +
           (item.teacher ? '<span>· ' + esc(item.teacher) + '</span>' : '') + '</div>' +
           (item.description ? '<div class="ag-list-note">' + esc(item.description) + '</div>' : '') + '</div></div>';
-      }).join('') + '</div>' : '<div class="ag-empty"><b>Nessuna attività</b><span>Nessun contenuto trovato in questa sezione del registro.</span></div>') +
+      }).join('') + '</div>' : '<div class="ag-empty"><b>' +
+        (isCompiti ? 'Nessun compito trovato' : 'Nessuna attività') + '</b><span>' +
+        (isCompiti ? 'Apri Registro di classe → Compiti e Verifiche nel registro per caricare i dati reali.'
+          : 'Nessun contenuto trovato in questa sezione del registro.') + '</span></div>') +
       '</section></div>';
   }
 
@@ -571,6 +585,7 @@
     switch (data.section) {
       case 'voti': return grades(data);
       case 'registro': return register(data);
+      case 'compiti': return register(data);
       case 'assenze': return attendance(data);
       case 'comunicazioni': return communications(data);
       case 'orario': return timetable(data);
