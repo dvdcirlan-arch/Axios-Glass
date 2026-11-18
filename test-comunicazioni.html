@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Fixture Comunicazioni — Axios Glass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="page-content">
+    <div class="desc-as-header"><span class="pull-left" title="ISTITUTO COMPRENSIVO STATALE LESMO">ISTITUTO COMPRENSIVO STATALE LESMO</span></div>
+    <span class="username">[Giulia Rossi]</span>
+
+    <fieldset>
+      <legend>Registro di Classe</legend>
+      <span id="fdData">18/11/2026</span>
+      <button data-action="FAMILY_REGISTRO_CLASSE_COMPITI">Compiti e Verifiche</button>
+      <table id="table-compiti">
+        <thead><tr><th>Giorno</th><th>Materia</th><th>Testo</th><th>Verifica</th></tr></thead>
+        <tbody>
+          <tr><td>18/11/2026</td><td>Matematica</td><td>Esercizi su integrali</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </fieldset>
+
+    <div id="content-comunicazioni">
+      <button data-action="FAMILY_COMUNICAZIONI">Comunicazioni</button>
+      <table>
+        <thead><tr><th>Data</th><th>Oggetto</th><th>Mittente</th><th>Allegato</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>17/11/2026</td>
+            <td>Colloqui generali — prenotazioni</td>
+            <td>Segreteria didattica</td>
+            <td><a href="#colloqui.pdf">Colloqui.pdf</a></td>
+          </tr>
+          <tr>
+            <td>12/11/2026</td>
+            <td>Uscita didattica al Museo</td>
+            <td>Prof.ssa Ferri</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="ui.js"></script>
+  <script src="scraper.js"></script>
+  <script src="content.js"></script>
+</body>
+</html>

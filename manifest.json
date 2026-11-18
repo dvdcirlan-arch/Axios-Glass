@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Axios Glass — Registro Elettronico",
   "short_name": "Axios Glass",
-  "version": "2.0.0",
+  "version": "2.1.1",
   "description": "Nuova interfaccia pastel-glass per il Registro Elettronico Axios Famiglie. Legge i dati reali dal DOM, senza modificarlo.",
   "icons": {
     "16": "icons/icon16.png",

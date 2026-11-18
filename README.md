@@ -34,16 +34,20 @@ funzionare, il contenuto originale viene solo nascosto con CSS.
 
 ## Cosa vedi
 
-Dashboard, Voti, Registro di classe, **Compiti**, Presenze, Comunicazioni, Orario, Pagella, Impostazioni.
+Dashboard, Voti, **Argomenti**, **Compiti**, Presenze, Comunicazioni, Orario, Pagella, Impostazioni.
 
 - Media generale, trend, distribuzione dei voti e sparkline SVG, senza librerie esterne.
 - Voti: ricerca, filtri (*tutti / ≥6 / <6 / simulati*), ordinamento e dettaglio per materia.
-- Registro: filtri per verifiche, compiti e argomenti; navigazione settimana; attività completate salvate.
+- **Argomenti** (ex *Registro*): solo gli argomenti della settimana, con navigazione settimana.
+  Compiti e verifiche non compaiono più qui.
 - **Compiti**: apre davvero la sezione *Registro di classe → Compiti e Verifiche* di Axios
   (`FAMILY_REGISTRO_CLASSE_COMPITI`) e legge tutte le righe di `#table-compiti`, compresi i compiti di oggi.
+  Qui trovi solo compiti e verifiche, con filtri *Tutti / Compiti / Verifiche* e attività completate salvate.
   Nessun dato del vecchio template settimanale viene mescolato.
+- **Ordina per**: in Compiti passa da *Data* (più recenti prima) ad *A–Z* (materia, poi titolo). La scelta resta salvata nel browser.
 - Comunicazioni: clicchi un messaggio e leggi testo completo, mittente e data; **Precedente / Successiva**
-  navigano tutta la posta, `Esc` o il backdrop chiudono.
+  navigano tutta la posta, `Esc` o il backdrop chiudono. Se Axios espone un allegato,
+  nel messaggio compare **Scarica allegato**, che apre il file reale.
 - Pagella: solo le righe realmente lette dal documento; se non è pubblicata resta vuota e **non**
   presta le medie della sezione Voti.
 - Simulatore *what-if* e calcolatore del voto necessario per raggiungere un obiettivo.

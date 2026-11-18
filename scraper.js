@@ -9,6 +9,8 @@
 
   const doc = global.document;
   const messageTriggers = Object.create(null);
+  const attachmentTriggers = Object.create(null);
+  const APP_TABLE_IDS = ['table-rcla', 'table-voti', 'table-compiti', 'table-argomenti'];
 
   function text(el) {
     return el ? String(el.textContent || '').replace(/\s+/g, ' ').trim() : '';
@@ -427,11 +429,50 @@
     return null;
   }
 
-  function communicationRecords() {
-    const container = doc.querySelector('#content-alunno') || doc.querySelector('#page-content') || doc.body;
-    const tables = Array.prototype.filter.call(container.querySelectorAll('table'), function (t) {
-      return t.id !== 'table-rcla' && t.id !== 'table-voti' && !t.classList.contains('table-voti');
+  function attachmentIn(row) {
+    const candidates = row.querySelectorAll('a[href], [data-action], [onclick], button');
+    for (let i = 0; i < candidates.length; i++) {
+      const el = candidates[i];
+      const hay = [
+        el.getAttribute('href'), el.getAttribute('data-action'),
+        el.getAttribute('onclick'), text(el), el.getAttribute('title')
+      ].join(' ');
+      if (/\.pdf|\.docx?|\.xlsx?|\.pptx?|\.zip|\/download|download|scarica|allegat/i.test(hay)) return el;
+    }
+    return null;
+  }
+
+  function isAppTable(table) {
+    return APP_TABLE_IDS.indexOf(table.id) >= 0 ||
+      table.classList.contains('table-voti') ||
+      !!(table.closest && table.closest('#axglass-app'));
+  }
+
+  function tablesIn(container) {
+    return Array.prototype.filter.call(container.querySelectorAll('table'), function (t) {
+      return !isAppTable(t);
     });
+  }
+
+  function communicationScope() {
+    return doc.querySelector('[id*="comunicaz"], [class*="comunicaz"]') ||
+      doc.querySelector('#content-alunno') || doc.querySelector('#page-content') || doc.body;
+  }
+
+  function communicationTable(table) {
+    const headerCells = table.querySelectorAll('thead th, tr:first-child th, tr:first-child td');
+    const headers = Array.prototype.map.call(headerCells, text).join(' ').toLowerCase();
+    return /comunicaz|oggetto|mittente|destinat|allegat|\bdata\b|\btitolo\b/.test(headers);
+  }
+
+  function communicationRecords() {
+    Object.keys(messageTriggers).forEach(function (key) { delete messageTriggers[key]; });
+    Object.keys(attachmentTriggers).forEach(function (key) { delete attachmentTriggers[key]; });
+
+    const scope = communicationScope();
+    const allTables = tablesIn(scope);
+    const matching = allTables.filter(communicationTable);
+    const tables = matching.length ? matching : (scope !== doc.body ? allTables : []);
     const records = [];
     let offset = 0;
     tables.forEach(function (t) {
@@ -449,9 +490,14 @@
         }
         const id = 'gen-' + (offset + r);
         const trigger = clickableIn(row);
+        const attachment = attachmentIn(row);
         if (trigger) messageTriggers[id] = trigger;
+        if (attachment) attachmentTriggers[id] = attachment;
         record.id = id;
         record.action = trigger ? 'open' : '';
+        record.attachment = attachment
+          ? { label: text(attachment) || attachment.getAttribute('title') || 'Allegato' }
+          : null;
         records.push(record);
       }
       offset += rows.length;
@@ -461,14 +507,13 @@
 
   function scrapeGeneric(section) {
     const container = doc.querySelector('#content-alunno') || doc.querySelector('#page-content') || doc.body;
-    const tables = Array.prototype.filter.call(container.querySelectorAll('table'), function (t) {
-      return t.id !== 'table-rcla' && t.id !== 'table-voti' && !t.classList.contains('table-voti');
-    });
+    const tables = tablesIn(container);
     const records = [];
     tables.forEach(function (t) { records.push.apply(records, tableRecords(t)); });
 
     const result = {};
-    const paragraphs = Array.prototype.map.call(container.querySelectorAll('p, .alert, .desc-as-header'), text)
+    const textScope = section === 'comunicazioni' ? communicationScope() : container;
+    const paragraphs = Array.prototype.map.call(textScope.querySelectorAll('p, .alert, .desc-as-header'), text)
       .filter(function (t) { return t.length > 5 && !/A\.S\./i.test(t); });
 
     if (section === 'assenze') {
@@ -485,21 +530,22 @@
     }
 
     if (section === 'comunicazioni') {
-      Object.keys(messageTriggers).forEach(function (key) { delete messageTriggers[key]; });
       const commRecords = communicationRecords();
       result.communications = commRecords.map(function (r) {
-        const values = Object.keys(r).filter(function (k) { return k !== 'id' && k !== 'action'; })
-          .map(function (k) { return r[k]; });
+        const values = Object.keys(r).filter(function (k) {
+          return k !== 'id' && k !== 'action' && k !== 'attachment';
+        }).map(function (k) { return r[k]; });
         return {
           id: r.id,
           action: r.action,
+          attachment: r.attachment || null,
           title: pick(r, ['oggetto', 'titolo', 'comunicazione', 'argomento']) || values.slice(0, 2).join(' — '),
           from: pick(r, ['mittente', 'da ', 'docente']),
           date: pick(r, ['data']),
           body: values.join(' · ')
         };
       }).concat(paragraphs.slice(0, 12).map(function (p, i) {
-        return { id: 'txt-' + i, title: p.slice(0, 90), from: '', date: '', body: p };
+        return { id: 'txt-' + i, title: p.slice(0, 90), from: '', date: '', body: p, attachment: null };
       }));
     }
 
@@ -541,6 +587,7 @@
     scrapeRegister: scrapeRegister,
     scrapeGeneric: scrapeGeneric,
     tableRecords: tableRecords,
-    messageTrigger: function (id) { return messageTriggers[id] || null; }
+    messageTrigger: function (id) { return messageTriggers[id] || null; },
+    attachmentTrigger: function (id) { return attachmentTriggers[id] || null; }
   };
 })(window);
