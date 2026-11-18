@@ -36,6 +36,7 @@
     read: Core.storageGet(KEYS.read, {}),
     gradeFilter: Core.storageGet(KEYS.gradeFilter, 'all'),
     registerFilter: Core.storageGet(KEYS.registerFilter, 'all'),
+    registerSort: Core.storageGet(KEYS.registerSort, 'date'),
     sort: Core.storageGet(KEYS.sort, 'date-desc'),
     target: Core.storageGet(KEYS.target, 8),
     search: '',
@@ -125,6 +126,13 @@
     return true;
   }
 
+  function triggerAttachment(id) {
+    const el = Scraper.attachmentTrigger && Scraper.attachmentTrigger(id);
+    if (!el) return false;
+    el.click();
+    return true;
+  }
+
   function moveMessage(step) {
     const list = (lastData && lastData.communications) || [];
     let index = -1;
@@ -140,9 +148,9 @@
   }
 
   function collect() {
-    // A click on Compiti must win over the DOM that is still on the old page.
+    // Once the user picks a section, keep it stable across re-renders;
+    // DOM detection is only the initial fallback on a fresh page load.
     const section = forcedSection || Scraper.detectSection(state.section);
-    forcedSection = null;
     state.section = section;
     save(KEYS.section, section);
 
@@ -153,6 +161,7 @@
       gradeQuery: state.gradeQuery,
       gradeFilter: state.gradeFilter,
       registerFilter: state.registerFilter,
+      registerSort: state.registerSort,
       sort: state.sort,
       subjectFilter: state.subjectFilter,
       openMessageId: state.openMessageId,
@@ -249,10 +258,8 @@
       state.section = payload.section;
       state.subjectFilter = '';
       state.openMessageId = null;
-      if (payload.section === 'compiti') {
-        state.registerFilter = 'compito';
-        save(KEYS.registerFilter, state.registerFilter);
-      }
+      state.registerFilter = 'all';
+      save(KEYS.registerFilter, state.registerFilter);
       save(KEYS.section, state.section);
       render();
       if (payload.section === 'compiti') {
@@ -275,19 +282,20 @@
       render();
     },
     'register-filter': function (payload) {
-      state.registerFilter = payload.filter;
+      state.registerFilter = payload.filter === 'compito' || payload.filter === 'verifica'
+        ? payload.filter : 'all';
       save(KEYS.registerFilter, state.registerFilter);
-      if (payload.filter === 'compito') {
-        forcedSection = 'compiti';
-        state.section = 'compiti';
-        save(KEYS.section, state.section);
-      }
       render();
-      if (payload.filter === 'compito') openCompitiTab();
+    },
+    'register-sort': function (payload) {
+      state.registerSort = payload.sort === 'alpha' ? 'alpha' : 'date';
+      save(KEYS.registerSort, state.registerSort);
+      render();
     },
     sort: function (payload) { state.sort = payload.sort; save(KEYS.sort, state.sort); render(); },
     subject: function (payload) {
       state.subjectFilter = payload.subject;
+      forcedSection = 'voti';
       state.section = 'voti';
       save(KEYS.section, state.section);
       render();
@@ -313,6 +321,9 @@
     'open-original': function (payload) {
       if (!triggerMessage(payload.id)) toast('Il messaggio originale non è più disponibile nella pagina.');
     },
+    'open-attachment': function (payload) {
+      if (!triggerAttachment(payload.id)) toast('L’allegato non è più disponibile nella pagina.');
+    },
     'sim-input': function (payload) {
       state.simulations[payload.subject] = Number(payload.value);
       save(KEYS.simulations, state.simulations);
@@ -337,6 +348,7 @@
     'week-prev': function () { trigger('button.settimana-naviga[data-others="-7"]'); },
     'week-next': function () { trigger('button.settimana-naviga[data-others="+7"]'); },
     notifications: function () {
+      forcedSection = 'comunicazioni';
       state.section = 'comunicazioni';
       save(KEYS.section, state.section);
       render();

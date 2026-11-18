@@ -15,6 +15,7 @@
     read: NS + 'read',
     gradeFilter: NS + 'grade-filter',
     registerFilter: NS + 'register-filter',
+    registerSort: NS + 'register-sort',
     sort: NS + 'sort',
     target: NS + 'target'
   };
@@ -184,6 +185,7 @@
         date: c.date || '',
         body: c.body || '',
         action: c.action || '',
+        attachment: c.attachment || null,
         readAt: c.readAt || '',
         unread: !(input.read && input.read[id]) && !c.read
       };
@@ -199,13 +201,17 @@
       return String(e.date || '').slice(0, 5);
     });
 
+    const registerFilter = ['all', 'compito', 'verifica'].indexOf(input.registerFilter) >= 0
+      ? input.registerFilter : 'all';
+
     return {
       meta: input.meta || {},
       section: input.section || 'dashboard',
       search: input.search || '',
       gradeQuery: input.gradeQuery || '',
       gradeFilter: input.gradeFilter || 'all',
-      registerFilter: input.registerFilter || 'all',
+      registerFilter: registerFilter,
+      registerSort: input.registerSort || 'date',
       sort: input.sort || 'date-desc',
       subjectFilter: input.subjectFilter || '',
       openMessageId: input.openMessageId || null,
