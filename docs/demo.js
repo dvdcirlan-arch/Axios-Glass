@@ -57,7 +57,7 @@
       { date: '15/11/2026', kind: 'assenza', subject: '', hours: '5', justified: 'Sì' }
     ],
     communications: [
-      { id: 'c1', title: 'Colloqui generali — prenotazioni', from: 'Segreteria didattica', date: '17/11/2026', body: 'Sono aperte le prenotazioni per i colloqui generali di dicembre. Potete prenotarvi entro il 30 novembre.' },
+      { id: 'c1', title: 'Colloqui generali — prenotazioni', from: 'Segreteria didattica', date: '17/11/2026', body: 'Sono aperte le prenotazioni per i colloqui generali di dicembre. Potete prenotarvi entro il 30 novembre.', attachment: { label: 'Calendario colloqui.pdf' } },
       { id: 'c2', title: 'Uscita didattica al Museo della Scienza', from: 'Prof.ssa Ferri', date: '12/11/2026', body: 'Martedì 1 dicembre la classe 4ªB visiterà il Museo della Scienza. Ritrovo alle ore 8:45 davanti all’ingresso principale.' },
       { id: 'c3', title: 'Avviso: sospensione lezioni pomeridiane', from: 'Dirigente scolastico', date: '05/11/2026', body: 'Si informa che giovedì 19 novembre le lezioni pomeridiane sono sospese per un evento istituzionale.' },
       { id: 'c4', title: 'Esito verifica di storia', from: 'Prof.ssa Conti', date: '28/10/2026', body: 'Le valutazioni della verifica sulla Rivoluzione francese sono state pubblicate nel registro.' }
@@ -84,6 +84,7 @@
     gradeQuery: '',
     gradeFilter: 'all',
     registerFilter: 'all',
+    registerSort: 'date',
     sort: 'date-desc',
     subjectFilter: '',
     target: 8,
@@ -128,14 +129,18 @@
       state.section = p.section;
       state.subjectFilter = '';
       state.openMessageId = null;
-      if (p.section === 'compiti') state.registerFilter = 'compito';
+      state.registerFilter = 'all';
       refresh();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     },
     search: function (p) { state.search = p.value; state.gradeQuery = p.value; refresh(); },
     'grade-search': function (p) { state.gradeQuery = p.value; refresh(); },
     'grade-filter': function (p) { state.gradeFilter = p.filter; refresh(); },
-    'register-filter': function (p) { state.registerFilter = p.filter; refresh(); },
+    'register-filter': function (p) {
+      state.registerFilter = p.filter === 'compito' || p.filter === 'verifica' ? p.filter : 'all';
+      refresh();
+    },
+    'register-sort': function (p) { state.registerSort = p.sort === 'alpha' ? 'alpha' : 'date'; refresh(); },
     sort: function (p) { state.sort = p.sort; refresh(); },
     subject: function (p) { state.subjectFilter = p.subject; state.section = 'voti'; refresh(); },
     'toggle-task': function (p) {
@@ -152,6 +157,7 @@
     'message-next': function () { moveMessage(1); },
     'close-modal': function () { state.openMessageId = null; refresh(); },
     'open-original': function () { toast('Nel demo non è presente il registro originale.'); },
+    'open-attachment': function () { toast('Nel demo non è presente il file allegato.'); },
     'sim-input': function (p) {
       state.simulations[p.subject] = Number(p.value);
       refresh();

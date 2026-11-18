@@ -45,7 +45,7 @@
         if (old) old.remove();
         var toast = document.createElement('div');
         toast.className = 'site-toast';
-       toast.textContent = copy.getAttribute('data-toast') || 'Copiato';
+        toast.textContent = copy.getAttribute('data-toast') || 'Copiato';
         document.body.appendChild(toast);
         setTimeout(function () { toast.remove(); }, 2000);
       };
@@ -60,6 +60,6 @@
         input.remove();
         done();
       }
-   });
+    });
   }
 })();

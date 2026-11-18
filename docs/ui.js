@@ -40,7 +40,7 @@
   const NAV = [
     { id: 'dashboard', label: 'Dashboard', icon: 'home' },
     { id: 'voti', label: 'Voti', icon: 'chart' },
-    { id: 'registro', label: 'Registro', icon: 'book' },
+    { id: 'registro', label: 'Argomenti', icon: 'book' },
     { id: 'compiti', label: 'Compiti', icon: 'clip' },
     { id: 'assenze', label: 'Presenze', icon: 'calendar' },
     { id: 'comunicazioni', label: 'Comunicazioni', icon: 'mail' },
@@ -52,7 +52,7 @@
   const TITLES = {
     dashboard: 'La tua giornata',
     voti: 'Valutazioni',
-    registro: 'Registro di classe',
+    registro: 'Argomenti di classe',
     compiti: 'Compiti e verifiche',
     assenze: 'Presenze e assenze',
     comunicazioni: 'Comunicazioni',
@@ -98,6 +98,20 @@
     const parts = String(value).match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})$/);
     if (parts) return parts[1].padStart(2, '0') + '/' + parts[2].padStart(2, '0') + '/' + parts[3];
     return esc(value);
+  }
+
+  function taskDate(value) {
+    if (value instanceof Date) return value.getTime();
+    const raw = String(value || '');
+    const numeric = raw.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    if (numeric) return new Date(Number(numeric[3]), Number(numeric[2]) - 1, Number(numeric[1])).getTime();
+    const named = raw.match(/(\d{1,2})\b.*?(gennaio|febbraio|marzo|aprile|maggio|giugno|luglio|agosto|settembre|ottobre|novembre|dicembre)/i);
+    if (named) {
+      const months = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno',
+        'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+      return new Date(new Date().getFullYear(), months.indexOf(named[2].toLowerCase()), Number(named[1])).getTime();
+    }
+    return 0;
   }
 
   function tone(value) {
@@ -408,47 +422,142 @@
       '</div></section>';
   }
 
-  /* ------------------------------------------------------------------ register */
-  function register(data) {
-    const list = data.register.filter(function (item) {
-      return data.registerFilter === 'all' || item.type === data.registerFilter;
-    });
-    const isCompiti = data.section === 'compiti';
-    const labels = { all: 'Tutto', verifica: 'Verifiche', compito: 'Compiti', argomento: 'Argomenti' };
-    const noun = data.registerFilter === 'compito' ? 'compiti'
-      : data.registerFilter === 'verifica' ? 'verifiche'
-      : data.registerFilter === 'argomento' ? 'argomenti' : 'elementi';
-    const sub = isCompiti
-      ? esc(list.length) + ' ' + noun + ' letti dalla sezione Compiti e Verifiche del registro'
-      : esc(data.week ? 'Settimana del ' + data.week + ' · ' : '') + esc(list.length) + ' elementi · spunta per segnare come fatto';
+  /* --------------------------------------------------------- register views */
+
+  const MONTHS = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+  const MONTH_NAMES = {
+    gennaio: 'gen', febbraio: 'feb', marzo: 'mar', aprile: 'apr', maggio: 'mag', giugno: 'giu',
+    luglio: 'lug', agosto: 'ago', settembre: 'set', ottobre: 'ott', novembre: 'nov', dicembre: 'dic'
+  };
+
+  function isTask(item) {
+    return item.type === 'compito' || item.type === 'verifica';
+  }
+
+  function sortRegister(list, mode) {
+    const byTitle = function (a, b) {
+      return String(a.title || '').localeCompare(String(b.title || ''), 'it', { sensitivity: 'base' });
+    };
+    if (mode === 'alpha') {
+      list.sort(function (a, b) {
+        return String(a.subject || '').localeCompare(String(b.subject || ''), 'it', { sensitivity: 'base' }) || byTitle(a, b);
+      });
+    } else {
+      list.sort(function (a, b) { return taskDate(b.date) - taskDate(a.date) || byTitle(a, b); });
+    }
+    return list;
+  }
+
+  function dateTile(value) {
+    const raw = String(value || '');
+    const numeric = raw.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{2,4})/);
+    const named = raw.match(/(\d{1,2})\b(.*)$/i);
+    let day = '—';
+    let month = '';
+    if (numeric) {
+      day = numeric[1].padStart(2, '0');
+      month = MONTHS[Number(numeric[2]) - 1] || numeric[2];
+    } else if (named) {
+      day = named[1].padStart(2, '0');
+      const names = Object.keys(MONTH_NAMES);
+      const found = names.filter(function (name) { return named[2].toLowerCase().indexOf(name) >= 0; })[0];
+      month = found ? MONTH_NAMES[found] : named[2].trim().slice(0, 3);
+    }
+    return '<div class="ag-task-date"><b>' + esc(day) + '</b><span>' + esc(month) + '</span></div>';
+  }
+
+  function countLabel(count, singular, plural) {
+    return count + ' ' + (count === 1 ? singular : plural);
+  }
+
+  function emptyState(title, text) {
+    return '<div class="ag-empty"><b>' + esc(title) + '</b><span>' + esc(text) + '</span></div>';
+  }
+
+  function taskRow(item) {
+    const isVerifica = item.type === 'verifica';
+    const label = isVerifica ? 'Verifica' : 'Compito';
+    const chip = isVerifica ? 'ag-chip--rose' : 'ag-chip--peach';
+    return '<div class="ag-task' + (item.done ? ' is-done' : '') + '">' +
+      '<button class="ag-check' + (item.done ? ' is-done' : '') + '" data-action="toggle-task" data-id="' + esc(item.id) + '"' +
+        ' title="' + (item.done ? 'Segna come da fare' : 'Segna come fatto') + '">' + icon('check') + '</button>' +
+      dateTile(item.date) +
+      '<div class="ag-task-body">' +
+      '<div class="ag-task-title">' + esc(item.title) + '</div>' +
+      '<div class="ag-task-meta">' +
+      '<span class="ag-chip ' + chip + '">' + label + '</span>' +
+      '<span class="ag-task-subject">' + esc(item.subject || 'Materia non indicata') + '</span>' +
+      (item.teacher ? '<span>' + esc(item.teacher) + '</span>' : '') +
+      '<span class="ag-task-when">' + esc(fmtDate(item.date)) + '</span>' +
+      '</div>' +
+      (item.description ? '<div class="ag-task-note">' + esc(item.description) + '</div>' : '') +
+      '</div></div>';
+  }
+
+  function topicRow(item) {
+    return '<div class="ag-task ag-task--topic">' +
+      dateTile(item.date) +
+      '<div class="ag-task-body">' +
+      '<div class="ag-task-title">' + esc(item.title) + '</div>' +
+      '<div class="ag-task-meta"><span class="ag-chip ag-chip--sky">Argomento</span>' +
+      '<span class="ag-task-subject">' + esc(item.subject || 'Materia non indicata') + '</span>' +
+      '<span class="ag-task-when">' + esc(fmtDate(item.date)) + '</span></div>' +
+      (item.description ? '<div class="ag-task-note">' + esc(item.description) + '</div>' : '') +
+      '</div></div>';
+  }
+
+  function sortControl(data) {
+    return '<div class="ag-sort" aria-label="Ordina per">' +
+      '<span class="ag-sort-label">Ordina per</span>' +
+      '<button data-action="register-sort" data-sort="date"' +
+        (data.registerSort === 'date' ? ' class="is-active"' : '') + '>Data</button>' +
+      '<button data-action="register-sort" data-sort="alpha"' +
+        (data.registerSort === 'alpha' ? ' class="is-active"' : '') + '>A–Z</button>' +
+      '</div>';
+  }
+
+  function compiti(data) {
+    const all = sortRegister(data.register.filter(isTask), data.registerSort);
+    const filter = data.registerFilter;
+    const list = all.filter(function (item) { return filter === 'all' || item.type === filter; });
+    const taskCount = all.filter(function (item) { return item.type === 'compito'; }).length;
+    const testCount = all.filter(function (item) { return item.type === 'verifica'; }).length;
+    const labels = { all: 'Tutti', compito: 'Compiti', verifica: 'Verifiche' };
+    const sub = countLabel(taskCount, 'compito', 'compiti') + ' · ' +
+      countLabel(testCount, 'verifica', 'verifiche') + ' · letti dalla sezione Axios';
+
     return '<div class="ag-stack"><section class="ag-card">' +
-      '<div class="ag-card-head"><div><h2 class="ag-card-title">' +
-      (isCompiti ? 'Compiti e verifiche' : 'Attività della classe') + '</h2>' +
-      '<p class="ag-card-sub">' + sub + '</p></div>' +
-      '<div style="display:flex;gap:8px;align-items:center">' +
-      (isCompiti ? '' :
-        '<button class="ag-icon-btn" data-action="week-prev" title="Settimana precedente">' + icon('chevron') + '</button>' +
-        '<button class="ag-icon-btn" data-action="week-next" title="Settimana successiva">' + icon('chevron') + '</button>') +
-      '</div></div>' +
-      '<div class="ag-seg" style="margin-bottom:12px">' + Object.keys(labels).map(function (key) {
+      '<div class="ag-card-head"><div><h2 class="ag-card-title">Compiti e verifiche</h2>' +
+      '<p class="ag-card-sub">' + esc(sub) + '</p></div>' +
+      '<span class="ag-chip ag-chip--peach">' + esc(list.length) + ' visibili</span></div>' +
+      '<div class="ag-toolbar">' +
+      '<div class="ag-seg">' + Object.keys(labels).map(function (key) {
         return '<button data-action="register-filter" data-filter="' + key + '"' +
-          (data.registerFilter === key ? ' class="is-active"' : '') + '>' + labels[key] + '</button>';
-      }).join('') + '</div></div>' +
-      (list.length ? '<div class="ag-list">' + list.map(function (item) {
-        const ico = item.type === 'verifica' ? 'alert' : item.type === 'compito' ? 'clip' : 'book';
-        const chip = item.type === 'verifica' ? 'ag-chip--rose' : item.type === 'compito' ? 'ag-chip--peach' : 'ag-chip--sky';
-        return '<div class="ag-list-item' + (item.done ? ' is-done' : '') + '">' +
-          '<button class="ag-check' + (item.done ? ' is-done' : '') + '" data-action="toggle-task" data-id="' + esc(item.id) + '">' + icon('check') + '</button>' +
-          '<div class="ag-list-ico ' + (item.type === 'verifica' ? '' : 'ag-list-ico--lavender') + '">' + icon(ico) + '</div>' +
-          '<div class="ag-list-body"><div class="ag-list-title">' + esc(item.title) + '</div>' +
-          '<div class="ag-list-meta"><span class="ag-chip ' + chip + '">' + esc(labels[item.type] || item.type) + '</span>' +
-          '<span>' + esc(item.subject || '') + '</span><span>' + fmtDate(item.date) + '</span>' +
-          (item.teacher ? '<span>· ' + esc(item.teacher) + '</span>' : '') + '</div>' +
-          (item.description ? '<div class="ag-list-note">' + esc(item.description) + '</div>' : '') + '</div></div>';
-      }).join('') + '</div>' : '<div class="ag-empty"><b>' +
-        (isCompiti ? 'Nessun compito trovato' : 'Nessuna attività') + '</b><span>' +
-        (isCompiti ? 'Apri Registro di classe → Compiti e Verifiche nel registro per caricare i dati reali.'
-          : 'Nessun contenuto trovato in questa sezione del registro.') + '</span></div>') +
+          (filter === key ? ' class="is-active"' : '') + '>' + labels[key] + '</button>';
+      }).join('') + '</div>' +
+      sortControl(data) +
+      '</div>' +
+      (list.length ? '<div class="ag-task-list">' + list.map(taskRow).join('') + '</div>'
+        : emptyState('Nessun compito o verifica', 'Apri Registro di classe → Compiti e Verifiche nel registro Axios per caricare i dati reali.')) +
+      '</section></div>';
+  }
+
+  function registro(data) {
+    const list = sortRegister(data.register.filter(function (item) {
+      return item.type === 'argomento';
+    }), 'date');
+    const sub = (data.week ? 'Settimana del ' + data.week + ' · ' : '') +
+      countLabel(list.length, 'argomento', 'argomenti') + ' · compiti e verifiche sono nella sezione Compiti';
+
+    return '<div class="ag-stack"><section class="ag-card">' +
+      '<div class="ag-card-head"><div><h2 class="ag-card-title">Argomenti di classe</h2>' +
+      '<p class="ag-card-sub">' + esc(sub) + '</p></div>' +
+      '<div style="display:flex;gap:8px;align-items:center">' +
+      '<button class="ag-icon-btn" data-action="week-prev" title="Settimana precedente">' + icon('chevron') + '</button>' +
+      '<button class="ag-icon-btn" data-action="week-next" title="Settimana successiva">' + icon('chevron') + '</button>' +
+      '</div></div>' +
+      (list.length ? '<div class="ag-task-list">' + list.map(topicRow).join('') + '</div>'
+        : emptyState('Nessun argomento', 'Apri Registro di classe → Argomenti nel registro Axios per caricare i dati reali.')) +
       '</section></div>';
   }
 
@@ -480,6 +589,7 @@
         '<div class="ag-list-ico ' + (c.unread ? '' : 'ag-list-ico--mint') + '">' + icon(c.unread ? 'mail' : 'eye') + '</div>' +
         '<div class="ag-list-body"><div class="ag-list-title">' + (c.unread ? '<span class="ag-dot" style="display:inline-block;vertical-align:middle;margin-right:6px"></span>' : '') + esc(c.title) + '</div>' +
         '<div class="ag-list-meta"><span>' + esc(c.from || 'Scuola') + '</span><span>' + fmtDate(c.date) + '</span>' +
+        (c.attachment ? '<span class="ag-attach-chip" title="' + esc(c.attachment.label || 'Allegato') + '">' + icon('clip') + '</span>' : '') +
         (c.readAt ? '<span>· letto</span>' : '') + '</div>' +
         '<div class="ag-list-note">' + esc(String(c.body || '').slice(0, 160)) + (String(c.body || '').length > 160 ? '…' : '') + '</div></div>' +
         icon('chevron') + '</div>';
@@ -513,7 +623,10 @@
       '<p class="ag-message-meta">' + esc(c.from || 'Scuola') + ' · ' + fmtDate(c.date) + '</p>' +
       '</div><button class="ag-icon-btn" data-action="close-modal" title="Chiudi">' + icon('close') + '</button></div>' +
       '<div class="ag-message-body">' + body + '</div>' +
-      (c.action ? '<div class="ag-message-source"><button class="ag-btn ag-btn--ghost ag-btn--sm" data-action="open-original" data-id="' + esc(c.id) + '">' + icon('monitor') + ' Apri nel registro</button></div>' : '') +
+      ((c.action || c.attachment) ? '<div class="ag-message-source">' +
+        (c.attachment ? '<button class="ag-btn ag-btn--primary ag-btn--sm" data-action="open-attachment" data-id="' + esc(c.id) + '" title="' + esc(c.attachment.label || 'Allegato') + '">' + icon('download') + ' Scarica allegato</button>' : '') +
+        (c.action ? '<button class="ag-btn ag-btn--ghost ag-btn--sm" data-action="open-original" data-id="' + esc(c.id) + '">' + icon('monitor') + ' Apri nel registro</button>' : '') +
+        '</div>' : '') +
       '<div class="ag-modal-actions">' +
       '<button class="ag-btn ag-btn--ghost ag-btn--sm" data-action="message-prev"' + (hasPrev ? '' : ' disabled') + '>' + icon('chevron') + ' Precedente</button>' +
       '<span class="ag-card-sub" style="margin:0;align-self:center">' + (index + 1) + ' / ' + list.length + '</span>' +
@@ -575,7 +688,7 @@
       '<section class="ag-card"><div class="ag-card-head"><h2 class="ag-card-title">Informazioni</h2></div>' +
       '<p class="ag-card-sub" style="line-height:1.7">Axios Glass legge esclusivamente i dati già presenti nella pagina del registro. ' +
       'Nessun valore viene inventato o inviato a server esterni. Le simulazioni esistono solo nel tuo browser.</p>' +
-      '<div class="ag-list-meta" style="margin-top:12px"><span class="ag-chip ag-chip--grey">v2.0.0</span>' +
+      '<div class="ag-list-meta" style="margin-top:12px"><span class="ag-chip ag-chip--grey">v2.1.1</span>' +
       '<span class="ag-chip ag-chip--mint">Dati reali</span><span class="ag-chip ag-chip--peach">Pastel glass</span></div>' +
       '</section></div>';
   }
@@ -584,8 +697,8 @@
   function section(data) {
     switch (data.section) {
       case 'voti': return grades(data);
-      case 'registro': return register(data);
-      case 'compiti': return register(data);
+      case 'registro': return registro(data);
+      case 'compiti': return compiti(data);
       case 'assenze': return attendance(data);
       case 'comunicazioni': return communications(data);
       case 'orario': return timetable(data);
