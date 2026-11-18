@@ -169,6 +169,7 @@
         date: r.date || '',
         teacher: r.teacher || '',
         description: r.description || '',
+        source: r.source || '',
         done: !!(input.completed && input.completed[r.id || 'r-' + i])
       };
     });
