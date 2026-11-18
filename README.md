@@ -34,11 +34,14 @@ funzionare, il contenuto originale viene solo nascosto con CSS.
 
 ## Cosa vedi
 
-Dashboard, Voti, Registro di classe, Presenze, Comunicazioni, Orario, Pagella, Impostazioni.
+Dashboard, Voti, Registro di classe, **Compiti**, Presenze, Comunicazioni, Orario, Pagella, Impostazioni.
 
 - Media generale, trend, distribuzione dei voti e sparkline SVG, senza librerie esterne.
 - Voti: ricerca, filtri (*tutti / ≥6 / <6 / simulati*), ordinamento e dettaglio per materia.
 - Registro: filtri per verifiche, compiti e argomenti; navigazione settimana; attività completate salvate.
+- **Compiti**: apre davvero la sezione *Registro di classe → Compiti e Verifiche* di Axios
+  (`FAMILY_REGISTRO_CLASSE_COMPITI`) e legge tutte le righe di `#table-compiti`, compresi i compiti di oggi.
+  Nessun dato del vecchio template settimanale viene mescolato.
 - Comunicazioni: clicchi un messaggio e leggi testo completo, mittente e data; **Precedente / Successiva**
   navigano tutta la posta, `Esc` o il backdrop chiudono.
 - Pagella: solo le righe realmente lette dal documento; se non è pubblicata resta vuota e **non**
@@ -123,7 +126,10 @@ Il repository contiene l'estensione nella radice e la landing page in `docs/`.
 | Avatar | `#imgAvatarHeader` |
 | Voti tabella | `#table-voti`, `.table-voti`, `#content-alunno table`, `#page-content table` |
 | Voti griglia | `.rdoc_full_valutazioni .voto`, `.table .voto` + tooltip `data-original-title` |
-| Registro | `#table-rcla`, settimana da `#fdData` |
+| Registro settimanale | `#table-rcla`, settimana da `#fdData` |
+| Compiti e verifiche | `#table-compiti`, colonne `giorno / materia / testo / verifica / inserito` |
+| Argomenti | `#table-argomenti` |
+| Tab attiva | `[data-action="FAMILY_REGISTRO_CLASSE_COMPITI"]` nel `<li class="active">` |
 | Timeline | `.mt-actions .mt-action`, `.mt-action-author`, `.mt-action-desc` |
 | Comunicazioni | righe di tabella; il link cliccabile viene memorizzato per "Apri nel registro" |
 

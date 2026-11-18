@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <title>Fixture Compiti e Verifiche — Axios Glass</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Sanitized imitation of the real Axios "Compiti e Verifiche" tab. -->
+  <div class="page-header">
+    <span class="desc-as-header"><span class="pull-left" title="ISTITUTO DI PROVA">ISTITUTO DI PROVA</span></span>
+    <span class="username"><b>DAVID</b></span>
+  </div>
+
+  <div id="page-content">
+    <fieldset>
+      <legend>Registro di Classe</legend>
+      <ul class="nav nav-tabs">
+        <li><a class="family-rcla" data-action="FAMILY_REGISTRO_CLASSE_SETTIMANA">Registro di classe</a></li>
+        <li class="active"><a class="family-rcla" data-action="FAMILY_REGISTRO_CLASSE_COMPITI">Compiti e Verifiche</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="rcla_content">
+          <label>Materia
+            <select id="fsMateria"><option value="">Tutte</option></select>
+          </label>
+          <select name="table-compiti_length">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="100">100</option>
+            <option value="-1">All</option>
+          </select>
+          <table id="table-compiti">
+            <thead><tr>
+              <th>Giorno</th><th>Materia</th><th>Testo</th><th>Verifica</th><th>Inserito</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>18/11/2026</td><td>TECNOLOGIA</td><td>Completare la tavola 5: cilindro cavo sezionato</td><td></td><td>17/11/2026</td></tr>
+              <tr><td>18/11/2026</td><td>EDUCAZIONE CIVICA</td><td>Consegna su classroom di una foto a tema smartphone</td><td></td><td>17/11/2026</td></tr>
+              <tr><td>18/11/2026</td><td>ARTE E IMMAGINE</td><td>Completare il disegno a matita del viandante</td><td></td><td>17/11/2026</td></tr>
+              <tr><td>24/11/2026</td><td>Matematica</td><td>Esercizi su integrali</td><td>S&igrave;</td><td>16/11/2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+
+  <script src="core.js"></script>
+  <script src="ui.js"></script>
+  <script src="scraper.js"></script>
+  <script src="content.js"></script>
+</body>
+</html>

@@ -74,8 +74,16 @@
     const bodyText = text(doc.querySelector('body')).slice(0, 4000);
     const legendText = Array.prototype.map.call(doc.querySelectorAll('legend'), text).join(' ').toLowerCase();
     const has = function (selector) { return !!doc.querySelector(selector); };
+    const activeTab = function (action) {
+      const link = doc.querySelector('[data-action="' + action + '"]');
+      const tab = link && link.closest('li');
+      return !!(tab && /\bactive\b/.test(tab.className));
+    };
 
     if (has('#table-voti') || has('.table-voti') || has('.rdoc_full_valutazioni')) return 'voti';
+    // "Compiti e Verifiche" is a real Axios tab with its own server-side table.
+    if (has('#table-compiti') || activeTab('FAMILY_REGISTRO_CLASSE_COMPITI')) return 'compiti';
+    if (has('#table-argomenti') || activeTab('FAMILY_REGISTRO_CLASSE_ARGOMENTI')) return 'registro';
     if (has('#table-rcla') || has('.family-rcla') || /registro di classe/i.test(legendText)) return 'registro';
     if (has('.tm-header') || has('#content-timeline') || has('#content-menu')) return 'dashboard';
     if (/assenze/i.test(legendText) || has('[id*="assenze"]')) return 'assenze';
@@ -91,12 +99,24 @@
       !!doc.querySelector('form[action*="Login"], #txtUserName, #txtPassword');
   }
 
-  function expandTables() {
-    const select = doc.querySelector('select[name="table-voti_length"]');
-    if (select && select.value !== '100' && select.value !== '-1') {
-      select.value = '100';
+  function expandSelect(name) {
+    const select = doc.querySelector('select[name="' + name + '_length"]');
+    if (!select || !select.options || !select.options.length) return;
+    const values = Array.prototype.map.call(select.options, function (o) { return String(o.value); });
+    const target = values.indexOf('-1') >= 0
+      ? '-1'
+      : (values.filter(function (v) { return /^\d+$/.test(v); })
+          .sort(function (a, b) { return Number(b) - Number(a); })[0] || '100');
+    if (select.value !== target) {
+      select.value = target;
       select.dispatchEvent(new global.Event('change', { bubbles: true }));
     }
+  }
+
+  function expandTables() {
+    expandSelect('table-voti');
+    expandSelect('table-compiti');
+    expandSelect('table-argomenti');
   }
 
   /* ---------------------------------------------------------------- grades */
@@ -219,11 +239,74 @@
   }
 
   /* --------------------------------------------------------------- register */
+
+  // Axios renders two register lists as server-side DataTables:
+  //   #table-compiti    -> giorno | materia | testo | verifica | inserito
+  //   #table-argomenti  -> giorno | materia | testo | inserito
+  // The "verifica" flag decides whether a row is a compito or a verifica.
+  function parseAxiosList(table, source) {
+    const headers = Array.prototype.map.call(
+      table.querySelectorAll('thead th, tr:first-child th, tr:first-child td'),
+      function (el) { return text(el).toLowerCase(); }
+    );
+    function col(patterns, fallback) {
+      for (let i = 0; i < headers.length; i++) {
+        for (let p = 0; p < patterns.length; p++) {
+          if (patterns[p].test(headers[i])) return i;
+        }
+      }
+      return fallback;
+    }
+    const isCompiti = source === 'compiti';
+    const cols = {
+      date: col([/giorno/, /^data/], 0),
+      subject: col([/materia/], 1),
+      body: col([/testo/, /compito/, /argomento/], 2),
+      verifica: col([/verifica/], 3)
+    };
+
+    const result = [];
+    const rows = table.querySelectorAll('tbody tr');
+    for (let r = 0; r < rows.length; r++) {
+      const tr = rows[r];
+      if (tr.classList.contains('dataTables_empty')) continue;
+      const cells = tr.querySelectorAll('td');
+      if (cells.length < 3) continue;
+
+      const bodyCell = cells[cols.body];
+      const verificaCell = cells[cols.verifica];
+      const verificaHtml = verificaCell ? String(verificaCell.innerHTML || '') : '';
+      const verificaText = text(verificaCell).trim();
+      const flagged = isCompiti && (
+        /^(s[iì]|yes|true|1|verifica)$/i.test(verificaText) ||
+        /fa-check|glyphicon-ok|icon-check|checked|\bverifica\b/i.test(verificaHtml)
+      );
+      const type = isCompiti ? (flagged ? 'verifica' : 'compito') : 'argomento';
+
+      result.push({
+        id: source + '-' + r + '-' + type,
+        type: type,
+        title: cleanHtml(bodyCell ? bodyCell.innerHTML : ''),
+        subject: text(cells[cols.subject]),
+        date: text(cells[cols.date]),
+        description: '',
+        teacher: '',
+        source: source
+      });
+    }
+    return result;
+  }
+
   function scrapeRegister() {
     const items = [];
-    const table = doc.querySelector('#table-rcla');
+    let source = '';
     const week = text(doc.querySelector('#fdData'));
 
+    // Make sure server-side tables expose all rows before we read the DOM.
+    expandTables();
+
+    // Weekly "Registro di classe" table (argomenti | compiti | verifiche columns).
+    const table = doc.querySelector('#table-rcla');
     if (table) {
       const rows = table.querySelectorAll('tbody tr');
       const categories = [
@@ -253,10 +336,34 @@
               subject: subject,
               date: date,
               description: description && description !== title ? description : '',
-              teacher: ''
+              teacher: '',
+              source: 'rcla'
             });
           });
         });
+      }
+      if (items.length) source = 'rcla';
+    }
+
+    // Dedicated "Compiti e Verifiche" tab: every real row becomes one item.
+    const compitiTable = doc.querySelector('#table-compiti');
+    if (compitiTable) {
+      const parsed = parseAxiosList(compitiTable, 'compiti');
+      if (parsed.length) {
+        items.length = 0;
+        items.push.apply(items, parsed);
+        source = 'compiti';
+      }
+    }
+
+    // "Argomenti" tab, when the user opens that tab instead.
+    const argomentiTable = doc.querySelector('#table-argomenti');
+    if (argomentiTable) {
+      const parsed = parseAxiosList(argomentiTable, 'argomenti');
+      if (parsed.length) {
+        items.length = 0;
+        items.push.apply(items, parsed);
+        source = 'argomenti';
       }
     }
 
@@ -280,11 +387,12 @@
         subject: subject,
         date: date,
         description: description && description !== author ? author : '',
-        teacher: ''
+        teacher: '',
+        source: 'timeline'
       });
     }
 
-    return { items: items, week: week };
+    return { items: items, week: week, source: source };
   }
 
   /* ---------------------------------------------------------------- generic */

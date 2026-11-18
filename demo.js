@@ -124,7 +124,14 @@
   }
 
   const handlers = {
-    nav: function (p) { state.section = p.section; state.subjectFilter = ''; state.openMessageId = null; refresh(); window.scrollTo({ top: 0, behavior: 'smooth' }); },
+    nav: function (p) {
+      state.section = p.section;
+      state.subjectFilter = '';
+      state.openMessageId = null;
+      if (p.section === 'compiti') state.registerFilter = 'compito';
+      refresh();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    },
     search: function (p) { state.search = p.value; state.gradeQuery = p.value; refresh(); },
     'grade-search': function (p) { state.gradeQuery = p.value; refresh(); },
     'grade-filter': function (p) { state.gradeFilter = p.filter; refresh(); },
