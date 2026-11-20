@@ -74,6 +74,9 @@ Scorciatoia: `Ctrl / Cmd + K` porta il focus nella ricerca.
    In alto a destra **Modalità classica** torna all'HTML originale; da lì il pulsante flottante
    **Mostra Axios Glass** ripristina la nuova UI.
 
+Video della procedura, in ripetizione automatica sulla pagina:
+https://dvdcirlan-arch.github.io/Axios-Glass/#install — [scarica l'MP4](https://dvdcirlan-arch.github.io/Axios-Glass/assets/chrome-install.mp4).
+
 ### Solo la demo, senza estensione
 
 Apri https://dvdcirlan-arch.github.io/Axios-Glass/demo.html, oppure il file `demo.html`
