@@ -58,21 +58,7 @@ Scorciatoia: `Ctrl / Cmd + K` porta il focus nella ricerca.
 
 ## Installazione
 
-1. Clona il repository oppure scarica lo ZIP e scompattalo:
-
-   ```powershell
-   git clone https://github.com/dvdcirlan-arch/Axios-Glass.git
-   cd Axios-Glass
-   ```
-
-2. Apri `chrome://extensions/`, attiva **Modalità sviluppatore** e scegli
-   **Carica estensione non pacchettizzata**.
-3. Seleziona la cartella appena clonata — è già la radice dell'estensione
-   (contiene `manifest.json`).
-4. **Disabilita la vecchia estensione** `axios-redesign`: due content script iniettino due UI diverse.
-5. Fai login su `https://registrofamiglie.axioscloud.it/`: Axios Glass si attiva da solo.
-   In alto a destra **Modalità classica** torna all'HTML originale; da lì il pulsante flottante
-   **Mostra Axios Glass** ripristina la nuova UI.
+https://compressbase.com/clip/20261120202835-2iOnaG7vWa0QgzBz
 
 ### Solo la demo, senza estensione
 
